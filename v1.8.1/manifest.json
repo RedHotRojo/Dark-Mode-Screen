@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Dark Mode",
+  "version": "1.8.1",
+
+  "description": "Adds a dark screen over everything",
+
+  "icons": {
+    "48": "icon.png"
+  },
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "storage"
+  ],
+  "options_ui": {
+    "page": "options.html"
+  },
+  "background": {
+    "scripts": ["main.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "gayali1rohit@gmail.com"
+    }
+  },
+  "browser_action": {
+    "default_icon": {
+      "32": "toolbarIconOff.jpeg"
+    }
+  }
+}
