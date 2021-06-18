@@ -1,0 +1,1 @@
+Fixed bug where excluding a site would break toggling dark mode
