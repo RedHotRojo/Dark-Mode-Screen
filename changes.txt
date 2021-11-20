@@ -1,0 +1,2 @@
+- Updates on/off setting more often
+  - If Firefox crashes, there is higher chance that your last setting will be saved
