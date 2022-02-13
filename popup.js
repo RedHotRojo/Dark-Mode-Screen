@@ -14,14 +14,14 @@ var toggle = false;
 async function btnClicked() {
   var thisTab = (await browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}))[0]
   var thisUrl = new URL(thisTab.url).hostname;
-  var currentUrls = (await browser.storage.sync.get("exclude")).exclude;
+  var currentUrls = (await browser.storage.sync.get("exclude")).exclude || [];
   toggle = !toggle;
   if (!toggle) {
     middleBtn.classList.remove("greenAnim");
     middleBtn.classList.add("redAnim");
     var thisTabInArr = currentUrls.indexOf(thisUrl);
     currentUrls.splice(thisTabInArr, 1);
-    browser.storage.sync.set({
+    await browser.storage.sync.set({
       exclude: currentUrls
     });
     setTimeout(() => {
@@ -31,6 +31,7 @@ async function btnClicked() {
       middleBtn.style.boxShadow = "0px 0px 1px #ff1111";
     }, 1000);
     var backgroundScript = await browser.runtime.getBackgroundPage();
+    await backgroundScript.updateStorage();
     backgroundScript.toggleDarkMode(thisTab);
   } else {
     middleBtn.classList.add("greenAnim");
@@ -54,7 +55,7 @@ async function btnClicked() {
     });
   }
 }
-async function setColor() {
+async function setColor(currClr) {
   var backgroundScript = await browser.runtime.getBackgroundPage();
   backgroundScript.setColor(currClr);
 }
@@ -62,25 +63,25 @@ fullBtn.addEventListener("click", btnClicked);
 redSlider.addEventListener("input", event => {
   currClr[0] = event.target.value;
   redLabel.textContent = "Red: " + currClr[0];
-  setColor();
+  setColor(currClr);
 });
 greenSlider.addEventListener("input", event => {
   currClr[1] = event.target.value;
   greenLabel.textContent = "Green: " + currClr[1];
-  setColor();
+  setColor(currClr);
 });
 blueSlider.addEventListener("input", event => {
   currClr[2] = event.target.value;
   blueLabel.textContent = "Blue: " + currClr[2];
-  setColor();
+  setColor(currClr);
 });
 alphaSlider.addEventListener("input", event => {
   currClr[3] = event.target.value;
   alphaLabel.textContent = "Alpha: " + currClr[3];
-  setColor();
+  setColor(currClr);
 });
 document.addEventListener("DOMContentLoaded", async function() {
-  currClr = (await browser.storage.sync.get("color")).color || [34, 34, 35, 40];
+  currClr = (await browser.storage.sync.get("color")).color || [36, 34, 33, 40];
   redLabel.textContent = "Red: " + currClr[0];
   greenLabel.textContent = "Green: " + currClr[1];
   blueLabel.textContent = "Blue: " + currClr[2];
@@ -89,29 +90,24 @@ document.addEventListener("DOMContentLoaded", async function() {
   greenSlider.value = Number(currClr[1]);
   blueSlider.value = Number(currClr[2]);
   alphaSlider.value = Number(currClr[3]);
-  var urls = await browser.storage.sync.get("exclude");
-  var check;
-  var tab = await browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT});
-  if (urls.exclude.length) {
-    check = urls.exclude.map(url => {
-      if (tab[0].url.indexOf(url) > -1) {
-        return false;
-      }
-    }).includes(false);
-    if (check) {
-      fullBtn.click();
-    }
+  var urls = (await browser.storage.sync.get("exclude")).exclude || [];
+  var tab = (await browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}))[0];
+  if (urls.length && urls.includes(new URL(tab.url).hostname)) {
+    fullBtn.click();
   }
 });
-window.onblur = async () => browser.storage.sync.set({color: currClr});
+window.onblur = async () => {
+  browser.storage.sync.set({color: currClr});
+  await (await browser.runtime.getBackgroundPage()).updateStorage();
+}
 resetBtn.onclick = () => {
-  currClr = [34, 34, 35, 40];
-  redLabel.textContent = "Red: " + 34;
-  greenLabel.textContent = "Green: " + 34;
-  blueLabel.textContent = "Blue: " + 34;
-  alphaLabel.textContent = "Alpha: " + 40;
-  redSlider.value = 34;
-  greenSlider.value = 34;
-  blueSlider.value = 35;
-  alphaSlider.value = 40
+  currClr = [36, 34, 33, 40];
+  redLabel.textContent = "Red: " + currClr[0];
+  greenLabel.textContent = "Green: " + currClr[1];
+  blueLabel.textContent = "Blue: " + currClr[2];
+  alphaLabel.textContent = "Alpha: " + currClr[3];
+  redSlider.value = currClr[0];
+  greenSlider.value = currClr[1];
+  blueSlider.value = currClr[2];
+  alphaSlider.value = currClr[3];
 }
