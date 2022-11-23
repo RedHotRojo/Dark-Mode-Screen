@@ -40,11 +40,11 @@ async function btnClicked() {
       middleBtn.style.boxShadow = "0px 0px 1px #11ff11";
     }, 1000);
   }
-  await browser.storage.sync.set({
+  browser.storage.sync.set({
     exclude: currentUrls
   });
   let backgroundScript = await browser.runtime.getBackgroundPage();
-  await backgroundScript.updateVariables();
+  backgroundScript.updateVariables();
   backgroundScript.toggleDarkMode(thisTab);
 }
 async function setColor(currClr) {
