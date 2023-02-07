@@ -27,6 +27,11 @@ async function toggleDarkMode(tab) {
     });
   }
 }
+function openPopup() {
+  browser.browserAction.setPopup({popup: "popup.html"});
+  browser.browserAction.openPopup();
+  browser.browserAction.setPopup({popup: null});
+}
 async function toolbarDark(thisTab, click) {
   if (!relax) {
     relax = 1;
@@ -34,9 +39,9 @@ async function toolbarDark(thisTab, click) {
       let tabs = await browser.tabs.query({});
       darkmode = !darkmode;
       if (darkmode) {
-        browser.browserAction.setIcon({path: {"16": "toolbarIconOn16.png", "32": "toolbarIconOn32.png", "48": "toolbarIconOn48.png"}});
+        browser.browserAction.setIcon({path: {"16": "moon.svg", "32": "moon.svg", "48": "moon.svg", "64": "moon.svg", "128": "moon.svg"}});
       } else {
-        browser.browserAction.setIcon({path: {"16": "toolbarIconOff16.png", "32": "toolbarIconOff32.png", "48": "toolbarIconOff48.png"}});
+        browser.browserAction.setIcon({path: {"16": "sun.svg", "32": "sun.svg", "48": "sun.svg", "64": "sun.svg", "128": "sun.svg"}});
       }
       for (let tab of tabs) {
         toggleDarkMode(tab);
@@ -45,9 +50,7 @@ async function toolbarDark(thisTab, click) {
         darkmode: darkmode
       });
     } else if (click.button === 1) {
-      browser.browserAction.setPopup({popup: "popup.html"});
-      browser.browserAction.openPopup();
-      browser.browserAction.setPopup({popup: null});
+      openPopup();
     }
     setTimeout(() => relax = 0, 200);
   }
@@ -72,6 +75,7 @@ async function setColor(clr) {
 }
 document.addEventListener("DOMContentLoaded", async () => {
   darkmode = !(await browser.storage.sync.get("darkmode")).darkmode;
+  browser.menus.create({onclick: openPopup, id: "brwsracshn", contexts: ["all"], title: "Open settings"});
   await toolbarDark(null, {button: 0});
   await updateVariables();
 });
