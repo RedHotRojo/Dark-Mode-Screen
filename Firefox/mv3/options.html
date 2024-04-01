@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        font-family: Calibri, Arial, Helvetica, sans-serif;
+        margin: 20px;
+        background-color: #222221;
+        color: #e1e1e1;
+      }
+      h1 {
+        font-family: Tahoma, Calibri, Arial, Helvetica, sans-serif;
+      }
+      .container {
+        margin-top: 25px;
+      }
+      .colorPicker {
+        display: flex;
+        justify-content: space-between;
+        width: 250px;
+      }
+      .colorSlider {
+        border: 1px solid #222221;
+        outline: 2px solid #222221;
+        outline-offset: -1px;
+        position: relative;
+        top: -2px;
+      }
+      #reset {
+        position: relative;
+        top: 5px;
+        border: none;
+      }
+      #commandContainer {
+        display: flex;
+        justify-content: space-between;
+        width: 400px;
+      }
+      #commandEditor {
+        width: 90px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dark Mode Screen Settings</h1>
+    <div class="container">
+      <h2>Color:</h2>
+      <div class="colorPicker">
+        <label id="redLabel" for="redSlider"></label><input type="range" id="redSlider" class="colorSlider" min="0" max="255" step="1">
+      </div>
+      <div class="colorPicker">
+        <label id="greenLabel" for="greenSlider"></label><input type="range" id="greenSlider" class="colorSlider" min="0" max="255" step="1">
+      </div>
+      <div class="colorPicker">
+        <label id="blueLabel" for="blueSlider"></label><input type="range" id="blueSlider" class="colorSlider" min="0" max="255" step="1">
+      </div>
+      <div class="colorPicker">
+        <label id="alphaLabel" for="alphaSlider"></label><input type="range" id="alphaSlider" class="colorSlider" min="0" max="100" step="1">
+      </div>
+      <button type="button" id="reset">Reset to default</button>
+    </div>
+    <div class="container" id="commandContainer">
+      <label id="commandLabel" for="commandEditor">"Exclude Site" Keyboard Shortcut: </label><input type="text" id="commandEditor">
+      <input type="button" value="Update" id="commandUpdate">
+    </div>
+    <p id="error">Please visit <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#key_combinations">this webpage (MDN)</a> for more info about properly setting a keyboard shortcut</p>
+    <div class="container">
+      <h2>List of excluded sites</h2>
+      <p id="excludeList"></p>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>

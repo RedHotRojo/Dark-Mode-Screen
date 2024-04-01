@@ -30,9 +30,8 @@ async function btnClicked() {
   } else {
     middleBtn.classList.remove("redAnim");
     middleBtn.classList.add("greenAnim");
-    if (currentUrls.indexOf(thisUrl) === -1) {
+    if (currentUrls.indexOf(thisUrl) === -1)
       currentUrls.push(thisUrl);
-    }
     setTimeout(() => {
       middleBtn.style.left = "19px";
       middleBtn.style.backgroundColor = "#11ff11";
@@ -43,35 +42,27 @@ async function btnClicked() {
   await browser.storage.sync.set({
     exclude: currentUrls
   });
-  let backgroundScript = await browser.runtime.getBackgroundPage();
-  await backgroundScript.updateVariables();
-  backgroundScript.toggleDarkMode(thisTab);
-}
-async function setColor(currClr) {
-  let backgroundScript = await browser.runtime.getBackgroundPage();
-  browser.storage.sync.set({color: currClr});
-  backgroundScript.setColor(currClr);
 }
 fullBtn.addEventListener("click", btnClicked);
 redSlider.addEventListener("input", event => {
   currClr[0] = event.target.value;
   redLabel.textContent = "Red: " + currClr[0];
-  setColor(currClr);
+  browser.storage.sync.set({color: currClr});
 });
 greenSlider.addEventListener("input", event => {
   currClr[1] = event.target.value;
   greenLabel.textContent = "Green: " + currClr[1];
-  setColor(currClr);
+  browser.storage.sync.set({color: currClr});
 });
 blueSlider.addEventListener("input", event => {
   currClr[2] = event.target.value;
   blueLabel.textContent = "Blue: " + currClr[2];
-  setColor(currClr);
+  browser.storage.sync.set({color: currClr});
 });
 alphaSlider.addEventListener("input", event => {
   currClr[3] = event.target.value;
   alphaLabel.textContent = "Alpha: " + currClr[3];
-  setColor(currClr);
+  browser.storage.sync.set({color: currClr});
 });
 document.addEventListener("DOMContentLoaded", async function() {
   currClr = (await browser.storage.sync.get("color")).color || [36, 34, 33, 40];
@@ -85,9 +76,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   alphaSlider.value = Number(currClr[3]);
   let urls = (await browser.storage.sync.get("exclude")).exclude || [];
   let tab = (await browser.tabs.query({active: true, currentWindow: true}))[0];
-  if (urls.length && urls.includes(new URL(tab.url).hostname)) {
+  if (urls.length && urls.includes(new URL(tab.url).hostname))
     fullBtn.click();
-  }
 });
 resetBtn.onclick = () => {
   currClr = [36, 34, 33, 40];

@@ -30,9 +30,8 @@ async function btnClicked() {
   } else {
     middleBtn.classList.remove("redAnim");
     middleBtn.classList.add("greenAnim");
-    if (currentUrls.indexOf(thisUrl) === -1) {
+    if (currentUrls.indexOf(thisUrl) === -1)
       currentUrls.push(thisUrl);
-    }
     setTimeout(() => {
       middleBtn.style.left = "19px";
       middleBtn.style.backgroundColor = "#11ff11";
@@ -40,11 +39,11 @@ async function btnClicked() {
       middleBtn.style.boxShadow = "0px 0px 1px #11ff11";
     }, 1000);
   }
-  browser.storage.sync.set({
+  await browser.storage.sync.set({
     exclude: currentUrls
   });
   let backgroundScript = await browser.runtime.getBackgroundPage();
-  backgroundScript.updateVariables();
+  await backgroundScript.updateVariables();
   backgroundScript.toggleDarkMode(thisTab);
 }
 async function setColor(currClr) {
@@ -85,9 +84,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   alphaSlider.value = Number(currClr[3]);
   let urls = (await browser.storage.sync.get("exclude")).exclude || [];
   let tab = (await browser.tabs.query({active: true, currentWindow: true}))[0];
-  if (urls.length && urls.includes(new URL(tab.url).hostname)) {
+  if (urls.length && urls.includes(new URL(tab.url).hostname))
     fullBtn.click();
-  }
 });
 resetBtn.onclick = () => {
   currClr = [36, 34, 33, 40];

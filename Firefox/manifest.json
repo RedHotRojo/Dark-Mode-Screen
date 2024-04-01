@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Dark Mode",
-  "version": "1.10",
+  "version": "1.11.3",
   "description": "Adds a dark screen over everything",
   "icons": {
     "16": "moon.svg",
@@ -13,7 +13,8 @@
     "<all_urls>",
     "menus",
     "storage",
-    "tabs"
+    "tabs",
+    "webNavigation"
   ],
   "background": {
     "scripts": ["main.js"]
@@ -32,5 +33,17 @@
       "128": "moon.svg"
     },
     "default_title": "Click to toggle darkmode on/off or middle click to change the settings"
+  },
+  "options_ui": {
+    "open_in_tab": false,
+    "page": "options.html"
+  },
+  "commands": {
+    "toggleExclude": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Toggle excluding the current site"
+    }
   }
 }

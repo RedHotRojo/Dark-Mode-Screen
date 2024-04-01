@@ -1,17 +1,18 @@
-<hmtl>
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="utf-8">
     <style>
       @keyframes btnGreen {
         from {
-          background-color: #ff1111;
+          background-color: #d70022;
           border: 2px solid #880000;
-          box-shadow: 0px 0px 1px #ff1111;
+          box-shadow: 0px 0px 1px #d70022;
           left: 0px;
         } to {
           background-color: #11ff11;
           border: 2px solid #008800;
-          box-shadow: 0px 0px 1px #11ff11;
+          box-shadow: 0px 0px 1px #003706;
           left: 19px;
         }
       }
@@ -19,12 +20,12 @@
         from {
           background-color: #11ff11;
           border: 2px solid #008800;
-          box-shadow: 0px 0px 1px #11ff11;
+          box-shadow: 0px 0px 1px #003706;
           left: 19px;
         } to {
-          background-color: #ff1111;
+          background-color: #d70022;
           border: 2px solid #880000;
-          box-shadow: 0px 0px 1px #ff1111;
+          box-shadow: 0px 0px 1px #d70022;
           left: 0px;
         }
       }
@@ -49,10 +50,10 @@
         width: 12px;
         height: 12px;
         border-radius: 12px;
-        background-color: #ff1111;
+        background-color: #d70022;
         border: 2px solid #880000;
         position: relative;
-        box-shadow: 0px 0px 1px #ff1111;
+        box-shadow: 0px 0px 1px #d70022;
       }
       .option {
         display: flex;
@@ -63,7 +64,7 @@
         font-family: Calibri, Arial, Helvetica, sans-serif;
         margin-left: 20px;
         margin-bottom: 20px;
-        background-color: #222223;
+        background-color: #222221;
         color: #e1e1e1;
       }
       .colorPicker {
@@ -72,8 +73,8 @@
         width: 250px;
       }
       .colorSlider {
-        border: 1px solid #222223;
-        outline: 2px solid #222223;
+        border: 1px solid #222221;
+        outline: 2px solid #222221;
         outline-offset: -1px;
         position: relative;
         top: -2px;
@@ -81,6 +82,7 @@
       #reset {
         position: relative;
         top: 5px;
+        border: none;
       }
     </style>
   </head>
@@ -90,16 +92,16 @@
     <br>
     <p><b>Color:</b></p>
     <div class="colorPicker">
-      <label id="redLabel" for="redSlider">Red: 34</label><input type="range" id="redSlider" class="colorSlider" min="0" max="255" step="1">
+      <label id="redLabel" for="redSlider"></label><input type="range" id="redSlider" class="colorSlider" min="0" max="255" step="1">
     </div>
     <div class="colorPicker">
-      <label id="greenLabel" for="greenSlider">Green: 34</label><input type="range" id="greenSlider" class="colorSlider" min="0" max="255" step="1">
+      <label id="greenLabel" for="greenSlider"></label><input type="range" id="greenSlider" class="colorSlider" min="0" max="255" step="1">
     </div>
     <div class="colorPicker">
-      <label id="blueLabel" for="blueSlider">Blue: 35</label><input type="range" id="blueSlider" class="colorSlider" min="0" max="255" step="1">
+      <label id="blueLabel" for="blueSlider"></label><input type="range" id="blueSlider" class="colorSlider" min="0" max="255" step="1">
     </div>
     <div class="colorPicker">
-      <label id="alphaLabel" for="alphaSlider">Alpha: 40</label><input type="range" id="alphaSlider" class="colorSlider" min="0" max="100" step="1">
+      <label id="alphaLabel" for="alphaSlider"></label><input type="range" id="alphaSlider" class="colorSlider" min="0" max="100" step="1">
     </div>
     <button type="button" id="reset">Reset to default</button>
     <script src="popup.js"></script>

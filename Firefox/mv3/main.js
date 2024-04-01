@@ -9,20 +9,21 @@ async function updateVariables() {
 function checkSites(tab) {
   return !excludedSites.includes(new URL(tab.url).hostname);
 }
-function applyScreenInjection(darkmode) {
-  if (darkmode && !document.getElementById("dark-mode-screen-extension")) {
-    let darkModeScreen = document.createElement("div");
-    darkModeScreen.id = "dark-mode-screen-extension";
-    darkModeScreen.style.cssText = "width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; background-color: rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 100}); z-index: 999999; pointer-events: none;";
-    document.body.append(darkModeScreen);
-  } else if (darkmode === false && document.getElementById("dark-mode-screen-extension")) {
-    document.getElementById("dark-mode-screen-extension").remove();
-  }
-}
 async function toggleDarkMode(tab) {
-  if (checkSites(tab)) {
-    browser.scripting.executeScript({target: {tab.id}, func: applyScreenInjection, args: [darkmode], injectImmediately: true});
-  }
+  if (darkmode && checkSites(tab)) {
+    browser.tabs.executeScript(tab.id, {code: `if (!document.getElementById("dark-mode-screen-extension")) {
+  let darkModeScreen = document.createElement("div");
+  darkModeScreen.id = "dark-mode-screen-extension";
+  darkModeScreen.style.cssText = "width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; background-color: rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 100}); z-index: 2147483647; pointer-events: none;";
+  document.body.append(darkModeScreen);
+}`, runAt: "document_start"});
+  } else
+    browser.tabs.executeScript(tab.id, {code: `if (document.getElementById("dark-mode-screen-extension")) document.getElementById("dark-mode-screen-extension").remove();`});
+}
+function openPopup() {
+  browser.action.setPopup({popup: "popup.html"});
+  browser.action.openPopup();
+  browser.action.setPopup({popup: null});
 }
 async function toolbarDark(thisTab, click) {
   if (!relax) {
@@ -30,43 +31,53 @@ async function toolbarDark(thisTab, click) {
     if (click.button === 0) {
       let tabs = await browser.tabs.query({});
       darkmode = !darkmode;
-      if (darkmode) {
-        browser.browserAction.setIcon({path: {"16": "toolbarIconOn16.png", "32": "toolbarIconOn32.png", "48": "toolbarIconOn48.png"}});
-      } else {
-        browser.browserAction.setIcon({path: {"16": "toolbarIconOff16.png", "32": "toolbarIconOff32.png", "48": "toolbarIconOff48.png"}});
-      }
-      for (let tab of tabs) {
+      if (darkmode)
+        browser.action.setIcon({path: {"16": "moon.svg", "32": "moon.svg", "48": "moon.svg", "64": "moon.svg", "128": "moon.svg"}});
+      else
+        browser.action.setIcon({path: {"16": "sun.svg", "32": "sun.svg", "48": "sun.svg", "64": "sun.svg", "128": "sun.svg"}});
+      for (let tab of tabs)
         toggleDarkMode(tab);
-      }
       browser.storage.sync.set({
         darkmode: darkmode
       });
-    } else if (click.button === 1) {
-      browser.browserAction.setPopup({popup: "popup.html"});
-      browser.browserAction.openPopup();
-      browser.browserAction.setPopup({popup: null});
-    }
+    } else if (click.button === 1)
+      openPopup();
     setTimeout(() => relax = 0, 200);
   }
 }
-browser.tabs.onCreated.addListener(toggleDarkMode);
-browser.browserAction.onClicked.addListener(toolbarDark);
-function setColorInjection(color) {
-  if (document.getElementById("dark-mode-screen-extension")) {
-    document.getElementById("dark-mode-screen-extension").style.backgroundColor = "rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] / 100})";
-  }
+async function newTabDark(details) {
+  toggleDarkMode(await browser.tabs.get(details.tabId));
 }
+function tabUpdated(t, c, tab) {
+  console.log(tab, c);
+  toggleDarkMode(tab);
+}
+browser.webNavigation.onDOMContentLoaded.addListener(newTabDark);
+browser.tabs.onUpdated.addListener(tabUpdated);
+browser.action.onClicked.addListener(toolbarDark);
 async function setColor(clr) {
-  color = [clr[0], clr[1], clr[2], clr[3]];
   let tabs = await browser.tabs.query({});
-  for (let tab of tabs) {
-    if (darkmode === true && checkSites(tab)) {
-      browser.scripting.executeScript({target: {tab.id}, func: setColorInjection, args: [color], injectImmediately: true});
-    }
-  }
+  for (let tab of tabs)
+    if (darkmode === true && checkSites(tab)) browser.tabs.executeScript(tab.id, {code: `if (document.getElementById("dark-mode-screen-extension")) document.getElementById("dark-mode-screen-extension").style.backgroundColor = "rgba(${clr[0]}, ${clr[1]}, ${clr[2]}, ${clr[3] / 100})";`});
+  color = [clr[0], clr[1], clr[2], clr[3]];
 }
+async function excludeSite() {
+  let activeTab = (await browser.tabs.query({currentWindow: true, active: true}))[0];
+  console.log(activeTab);
+  let url = new URL(activeTab.url).hostname;
+  if (checkSites(activeTab))
+    excludedSites.push(url);
+  else
+    excludedSites.splice(excludedSites.indexOf(url, 1));
+  toggleDarkMode(activeTab);
+  await browser.storage.sync.set({
+    exclude: excludedSites
+  });
+}
+browser.commands.onCommand.addListener(excludeSite);
 document.addEventListener("DOMContentLoaded", async () => {
   darkmode = !(await browser.storage.sync.get("darkmode")).darkmode;
+  browser.menus.create({onclick: openPopup, id: "brwsracshn", contexts: ["all"], title: "Open settings"});
   await toolbarDark(null, {button: 0});
   await updateVariables();
 });
