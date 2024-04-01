@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Dark Mode",
+  "version": "1.11.1",
+  "description": "Adds a dark screen over everything",
+  "icons": {
+    "16": "moon.svg",
+    "32": "moon.svg",
+    "48": "moon.svg",
+    "128": "moon.svg"
+  },
+  "permissions": [
+    "menus",
+    "scripting",
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+  "background": {
+    "scripts": ["main.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "gayali1rohit@gmail.com"
+    }
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "moon.svg",
+      "32": "moon.svg",
+      "48": "moon.svg",
+      "64": "moon.svg",
+      "128": "moon.svg"
+    },
+    "default_title": "Click to toggle darkmode on/off or middle click to change the settings"
+  },
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "options.html"
+  },
+  "commands": {
+    "toggleExclude": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "linux": "Ctrl+Shift+U"
+      },
+      "description": "Toggle excluding the current site"
+    }
+  }
+}
